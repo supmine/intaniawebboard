@@ -18,7 +18,7 @@ var flash = require('connect-flash');
 const s3 = new AWS.S3({
     accessKeyId: process.env.AWS_ID,
     secretAccessKey: process.env.AWS_SECRET
-});  
+});
 // import routers
 const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
@@ -72,10 +72,10 @@ passport.deserializeUser((id, cb) => {
 
 
 //connect db + start server
-const PORT = process.env.PORT || 4000;
+//const PORT = process.env.PORT || 4000;
 initServer().then(result => {
-    app.listen(PORT, (req, res) => {
-        console.log(`Server Started at PORT ${PORT}`);
+    app.listen(process.env.PORT || 4000, (req, res) => {
+        console.log(`Server Started at PORT ${process.env.PORT || 4000}`);
     });
 });
 
@@ -87,7 +87,7 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-app.use('/uploads',express.static('uploads'));
+app.use('/uploads', express.static('uploads'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -105,11 +105,11 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // handing CORS
-app.use((req,res,next) => {
+app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers",
-     "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-     ); 
+        "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+    );
     if (req.method === 'OPTIONS') {
         res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
         return res.status(200).json({});
@@ -124,17 +124,17 @@ app.use('/comment', commentRouter);
 
 // TEST FILE UPLOAD TO S3 //
 const upload = require('./util/uploadImage');
-                //in <input name="vvvvvvvv">       
-app.post('/upload', upload.single('imageUrl'), async (req,res) => {
+//in <input name="vvvvvvvv">       
+app.post('/upload', upload.single('imageUrl'), async(req, res) => {
     const fileType = path.extname(req.file.originalname);
     const params = {
-        Bucket: process.env.AWS_BUCKET_NAME,
-        Key: `${uuidv4()}.${fileType}`,
-        Body: req.file.buffer,
-        ACL: "public-read"
-    }
-    //console.log(req.protocol + '://' + req.get('host') + req.originalUrl);
-    //res.status(200).send('asd');
+            Bucket: process.env.AWS_BUCKET_NAME,
+            Key: `${uuidv4()}.${fileType}`,
+            Body: req.file.buffer,
+            ACL: "public-read"
+        }
+        //console.log(req.protocol + '://' + req.get('host') + req.originalUrl);
+        //res.status(200).send('asd');
     var url = null;
     await s3.upload(params).promise()
         .then(data => {
@@ -150,29 +150,29 @@ app.post('/upload', upload.single('imageUrl'), async (req,res) => {
     console.log('here');
 });
 
-app.get('/addtopic', (req,res) => {
-    res.render('addtopic', { message: "" });
-})
-// END TEST FILE UPLOAD TO S3 //
+app.get('/addtopic', (req, res) => {
+        res.render('addtopic', { message: "" });
+    })
+    // END TEST FILE UPLOAD TO S3 //
 
 const Topic = require('./models/topic');
 const Comment = require('./models/comment');
 const Test = require('./models/test');
 const mongoose = require('mongoose');
-app.get('/test', async (req,res) => {
+app.get('/test', async(req, res) => {
     const result = await Topic.findById('608be494fd737b2d7029e8a1');
     res.json(result);
 });
 
 
 //handling errors
-app.use((req,res,next) => {
+app.use((req, res, next) => {
     const err = new Error('Not found');
     err.status = 404;
     next(err);
 });
 
-app.use((err,req,res,next) => {
+app.use((err, req, res, next) => {
     res.status(err.status || 500);
     res.json({
         error: {
