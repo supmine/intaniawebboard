@@ -38,7 +38,7 @@ passport.use(
             }
             if (!user) {
                 console.log('incorrect username');
-                return done(null, false, { message: 'Incorrect username' });
+                return done(null, false, { message: 'Incorrect username or password' });
             }
 
             if (bcrypt.compareSync(password, user.password)) {
@@ -46,7 +46,7 @@ passport.use(
                 return done(null, user);
             }
             console.log('incorrect password');
-            return done(null, false, { message: 'Incorrect password' });
+            return done(null, false, { message: 'Incorrect username or password' });
         });
     })
 );
