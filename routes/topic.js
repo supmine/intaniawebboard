@@ -10,10 +10,10 @@ const uploadToS3 = require('../util/uploadToS3');
 const router = express.Router();
 
 const isAuthenticated = (req, res, next) => {
-    if(req.user){
+    if (req.user) {
         console.log('authenticated');
         return next();
-    } else{
+    } else {
         console.log('not authenticated')
         res.redirect('/login');
         /*res.status(401).json({
@@ -24,9 +24,9 @@ const isAuthenticated = (req, res, next) => {
 
 /** return all topics, each topic with 1 latest comment.
  *  return topics are ordered by descending date (topics[0] = oldest)
- */ 
+ */
 // /topics/
-router.get('/',isAuthenticated, async (req,res) => {
+router.get('/', isAuthenticated, async(req, res) => {
     // console.log(req.session);
     // console.log(req.user);
     const topics = await Topic.find()
@@ -39,56 +39,63 @@ router.get('/',isAuthenticated, async (req,res) => {
                 error: err
             });
         });
-    const topicAndComment = await Promise.all(topics.map(async (tp) => {
+    const topicAndComment = await Promise.all(topics.map(async(tp) => {
         const comments = await Comment.find({ topic: tp._id })
-        .select('-__v -updatedAt')
-        .sort({ createdAt: -1 })
-        .populate('author', 'username')
-        .exec()
-        .catch(err => {
-            console.log(err);
-            res.status(500).json({
-                error: err
+            .select('-__v -updatedAt')
+            .sort({ createdAt: -1 })
+            .populate('author', 'username')
+            .exec()
+            .catch(err => {
+                console.log(err);
+                res.status(500).json({
+                    error: err
+                });
             });
-        });
         let commentCount = 0;
         let comment = null;
-        if(comments.length > 0){
+        if (comments.length > 0) {
             commentCount = comments.length;
             comment = comments[0];
         }
+        var tms = 0;
+        if (moment().utcOffset() == -0) {
+            // for server
+            tms += 28800000
+        }
+        tms += tp.createdAt;
         return {
             topic: tp,
             comment: comment,
             commentCount: commentCount,
-            topicCreatedAt: moment(tp.createdAt).format("MMMM DD YYYY, H:mm"),
+            topicCreatedAt: moment(tms).format("MMMM DD YYYY, H:mm"),
             request: {
                 type: 'GET',
                 url: req.protocol + '://' + req.get('host') + req.originalUrl + tp._id
             }
         };
     }));
- /*   res.status(200).json({
+
+    /*   res.status(200).json({
+           topicCount: topics.length,
+           topics: topicAndComment */
+    res.render('topics', {
         topicCount: topics.length,
-        topics: topicAndComment */
-        res.render('topics', {
-            topicCount: topics.length, 
-            topics: topicAndComment,
-            currentUser: req.user.username
-        });
+        topics: topicAndComment,
+        currentUser: req.user.username
+    });
 
 });
 
 // add new topic **expects body in req.body**
 // post /topics/
 // tested 
-router.post('/', isAuthenticated, upload.single('image'), async (req, res) => {
+router.post('/', isAuthenticated, upload.single('image'), async(req, res) => {
     let imageUrl = null;
-    if(req.file){
-        try{
+    if (req.file) {
+        try {
             let data = await uploadToS3(req.file);
             imageUrl = data.Location;
-        } catch(err) {
+        } catch (err) {
             console.log(err)
             res.status(500).json({
                 message: "Error uploading file to storage"
@@ -106,22 +113,22 @@ router.post('/', isAuthenticated, upload.single('image'), async (req, res) => {
             console.log(result);
 
             res.redirect('/topics')
-            /*res.status(201).json({
-                message: "Created new topic succesfully",
-                topic: {
-                    _id: newTopic._id,
-                    body: newTopic.body,
-                    authorId: newTopic.author,
-                    authorUsername: req.user.username,
-                    likes: newTopic.likes,
-                    imageUrl: newTopic.imageUrl,
-                    createdAt: newTopic.createdAt,
-                    request: {
-                        type: 'GET',
-                        url: req.protocol + '://' + req.get('host') + req.originalUrl + newTopic._id
+                /*res.status(201).json({
+                    message: "Created new topic succesfully",
+                    topic: {
+                        _id: newTopic._id,
+                        body: newTopic.body,
+                        authorId: newTopic.author,
+                        authorUsername: req.user.username,
+                        likes: newTopic.likes,
+                        imageUrl: newTopic.imageUrl,
+                        createdAt: newTopic.createdAt,
+                        request: {
+                            type: 'GET',
+                            url: req.protocol + '://' + req.get('host') + req.originalUrl + newTopic._id
+                        }
                     }
-                }
-            });*/
+                });*/
         })
         .catch(err => {
             console.log(err);
@@ -134,15 +141,15 @@ router.post('/', isAuthenticated, upload.single('image'), async (req, res) => {
 /** get all comment of a single topic
  *  return all comment ordered by ascending date (ก่อนไปหลัง)
  */ // /topics/sfnkr1n2k2ne0j0d9f
- router.get('/:topicId', isAuthenticated, (req,res) => {
+router.get('/:topicId', isAuthenticated, (req, res) => {
     const topicID = req.params.topicId;
     Topic.findById(topicID) //invalid id will throws error. valid but absent id will return null
         .populate('author', 'username')
         .select('-__v -updatedAt')
         .exec()
         .then(topic => {
-            if(topic) {
-                Comment.find({topic: topicID}) //if fails will return []
+            if (topic) {
+                Comment.find({ topic: topicID }) //if fails will return []
                     .populate('author', 'username')
                     .select('-__v -updatedAt -topic')
                     .then(cms => {
@@ -151,7 +158,7 @@ router.post('/', isAuthenticated, upload.single('image'), async (req, res) => {
                             currentUser: req.user.username,
                             topicCreatedAt: moment(topic.createdAt).format("MMMM DD YYYY, H:mm"),
                             comments: cms.map(comment => {
-                                return{
+                                return {
                                     _id: comment._id,
                                     likes: comment.likes,
                                     body: comment.body,
@@ -166,9 +173,8 @@ router.post('/', isAuthenticated, upload.single('image'), async (req, res) => {
                         console.log(err);
                         res.status(500).json({ error: err });
                     })
-            }
-            else{ //cant find topic
-                res.status(404).json({message: 'No topic found for provided ID'});
+            } else { //cant find topic
+                res.status(404).json({ message: 'No topic found for provided ID' });
             }
         })
         .catch(err => {;
@@ -183,46 +189,45 @@ router.post('/', isAuthenticated, upload.single('image'), async (req, res) => {
 
 //edit topic **expects newBody in req.body**
 //tested only with dummy userIds
-router.patch('/:topicId', isAuthenticated, (req,res,next) => {
+router.patch('/:topicId', isAuthenticated, (req, res, next) => {
     const id = req.params.topicId;
     const userId = req.user._id;
-    Topic.updateOne({ _id: id, author: userId}, { $set: { body: req.body.newBody } })
-    .exec()
-    .then(result => {
-        console.log(result);
-        if(result.nModified === 1){
-            res.status(200).json({
-                message: 'Topic edited',
-                request: {
-                    type: 'GET',
-                    url: req.protocol + '://' + req.get('host') + req.originalUrl + id
-                }
+    Topic.updateOne({ _id: id, author: userId }, { $set: { body: req.body.newBody } })
+        .exec()
+        .then(result => {
+            console.log(result);
+            if (result.nModified === 1) {
+                res.status(200).json({
+                    message: 'Topic edited',
+                    request: {
+                        type: 'GET',
+                        url: req.protocol + '://' + req.get('host') + req.originalUrl + id
+                    }
+                });
+            } else {
+                res.status(405).json({
+                    message: "Only the topic owner can edit this topic"
+                });
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                message: "Error editing topic",
+                error: err
             });
-        }
-        else {
-            res.status(405).json({
-                message: "Only the topic owner can edit this topic"
-            });
-        }
-    })
-    .catch(err => {
-        console.log(err);
-        res.status(500).json({
-            message: "Error editing topic",
-            error: err
         });
-    });
 });
 
 //delete topic from db
 //tested with only dummy userIds
-router.delete('/:topicId', isAuthenticated, (req,res,next) => {
+router.delete('/:topicId', isAuthenticated, (req, res, next) => {
     const id = req.params.topicId;
     const userId = req.user._id;
-    Topic.remove({_id: id, author: userId}, {single: true})
+    Topic.remove({ _id: id, author: userId }, { single: true })
         .exec()
         .then(result => {
-            if(result.deletedCount === 1){
+            if (result.deletedCount === 1) {
                 res.status(200).json({
                     message: "Topic deleted"
                 });
@@ -242,21 +247,21 @@ router.delete('/:topicId', isAuthenticated, (req,res,next) => {
 
 //add a comment to the topic with id=topicId **expects body, topicId, image in req.body**
 //tested only with dummy userIds
-router.post('/:topicId/comment', isAuthenticated, upload.single('image'), async (req,res) => {
+router.post('/:topicId/comment', isAuthenticated, upload.single('image'), async(req, res) => {
     const topicId = req.params.topicId;
     let imageUrl = null;
     Topic.findById(topicId)
         .then(async topic => {
-            if(!topic) {
+            if (!topic) {
                 return res.status(404).json({
                     message: 'Topic not Found'
                 });
             }
-            if(req.file){
-                try{
+            if (req.file) {
+                try {
                     let data = await uploadToS3(req.file);
                     imageUrl = data.Location;
-                } catch(err) {
+                } catch (err) {
                     console.log(err)
                     res.status(500).json({
                         message: "Error uploading file to storage"
@@ -266,7 +271,7 @@ router.post('/:topicId/comment', isAuthenticated, upload.single('image'), async 
             const newComment = new Comment({
                 body: req.body.body,
                 topic: topicId,
-                author: req.user._id, 
+                author: req.user._id,
                 imageUrl
             });
             return newComment.save();
@@ -288,7 +293,7 @@ router.post('/:topicId/comment', isAuthenticated, upload.single('image'), async 
                     url: req.protocol + '://' + req.get('host') +'/topics/'+ topicId
                 }
               });*/
-              res.redirect('/topics/' + topicId)
+            res.redirect('/topics/' + topicId)
         })
         .catch(err => {
             console.log(err);
