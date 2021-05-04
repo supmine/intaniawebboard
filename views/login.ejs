@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Kanit&amp;subset=thai,latin" rel="stylesheet" type="text/css">
+    
+    <title>Login</title>
+
+    <%- include('layout')%>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Kanit', 'Google Sans';
+        }
+    </style>
+
+</head>
+
+<body style="background-color: #1b3457; padding: 40px;">
+    
+    <div class="form-container vsc-initialized">
+        
+            <div class="container" style="color: white; background-color: #457b9d; border-radius: 20px; padding: 60px; text-align: center;"> 
+                <h1><b>Intania Webboard :))</b></h1>
+            </div>
+
+        <br>
+        <div class="container" style="text-align:center; color: white; background-color: #6DC2C5; border-radius: 20px; padding: 25px;">
+            <h4>
+                Welcome to the Intania Webboard!<br>
+                Log in to see latest content our Intania peeps have come up with!
+            </h4>
+        </div>
+
+        <br>
+        
+        <div class="container" style="background-color: #f1faee ; padding: 20px; border-radius: 20px;"> 
+            
+            <form class="form-signin"  method="POST" action="/auth/login">
+
+                
+                <h2 style="color: #e63946; padding: 4px 0px 4px 8px;" class="form-signin-heading">Please Login</h2>
+                
+                
+                <div class="form-group">
+                    <label class="sr-only" for="username">Username</label>
+                    <input class="form-control" type="text" name="username" id="username" placeholder="Username" required="required" />
+                </div>
+
+                <div class="form-group">
+                    <label class="sr-only" for="password">Password</label>
+                    <input class="form-control" type="password" name="password" id="password" placeholder="Password" required="required" />
+                </div>
+
+                
+                <button class="btn btn-primary btn-block" type="submit" style="background-color: #e63946; border-color: transparent;">Log In</button>
+                
+                <a class="btn btn-link" href="/register" style="color:#e63946;">Don't have an account?</a>
+                <p>
+                    <%= message%>
+                </p>
+            </form>
+        </div>
+
+    </div>
+</body>
+
+</html>

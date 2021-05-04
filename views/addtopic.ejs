@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <%- include('layout')%>
+</head>
+
+<body>
+    <div class="form-container">
+        <form class="form-signin" method="POST" action="/topics" enctype="multipart/form-data">
+          <div class="custom-file mb-3">
+            <input type="file" name="image" id="file" class="custom-file-input">
+            <label for="file" class="custom-file-label">Choose File</label>
+            <div class="form-group">
+              <label class="sr-only" for="body">body</label>
+              <input class="form-control" type="text" name="body" id="body" placeholder="body" required="required" /></div>
+              <button class="btn btn-primary btn-block" type="submit">Submit</button>
+            </div>
+          </div>
+        </form>
+    </div>
+</body>
+
+</html>

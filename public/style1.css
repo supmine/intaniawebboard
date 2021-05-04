@@ -1,0 +1,32 @@
+.container{
+    padding: 0px 15px;
+    margin: 0px 20%;
+    
+}
+
+.btn-block{
+    width: 100%;
+    border-radius: 10px;
+    padding: 5px 16px;
+    border-color: transparent;
+}
+
+.form-signin{
+    width: 45%;
+    text-align: center;
+}
+
+.form-control{
+    width: 100%;
+}
+
+.form-group{
+    text-align: left;
+}
+
+.form-container{
+    padding: 20px;
+    margin: 20px;
+}
+
+

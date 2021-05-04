@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+	<link href="https://fonts.googleapis.com/css2?family=Google+Sans&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Kanit&amp;subset=thai,latin" rel="stylesheet" type="text/css">
+
+    <title><%= topic.author.username %>'s post</title>
+    <%- include('layout')%>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Kanit', 'Google Sans';
+        }
+    </style>
+
+</head>
+
+<body style="background-color: #1b3457; padding: 40px;">
+
+    <div class="form-container vsc-initialized">
+
+        
+         <div class="container" style="color:rgb(42, 42, 42); background-color: #8ACED0; border-radius: 20px; padding: 35px;">
+            <a href="/topics" class="view-comments-button">Back to home</a>
+            <div class="post-section">
+                <p><%= topic.author.username %></p>
+                <br>
+                <p style="font-size: small;"><%= topicCreatedAt %></p>
+            
+                <div class="content-section">
+                    <%= topic.body %>
+                </div>
+                <%if (topic.imageUrl) { %>
+                    <img src="<%= topic.imageUrl%>" alt="Image Not Found" width="50%">
+                    <% } %>
+                <button type="button" onclick="playText('<%= topic.body %>')">Speak!</button>
+            </div>
+            
+        </div>
+
+      
+          <br>
+          <div class="container" style="color:rgb(42, 42, 42); background-color: #8ACED0; border-radius: 20px; padding: 35px;">
+      
+                <form class="form-signin" method="POST" action="/topics/<%= topic._id %>/comment" enctype="multipart/form-data">
+              
+                  <div class="form-group">
+                    <label class="sr-only" for="body">Write Here:</label>
+                    <input class="form-control" type="text" name="body" id="body" required="required" placeholder="Add a comment as <%= currentUser %>" />
+                  </div>
+        
+                    <button class="btn btn-primary btn-block btn-link" type="submit" style="color:white; background-color: #457b9d; border-color: transparent;">Comment</button>
+      
+                
+                </form>
+              
+          </div>
+        
+        <div id =" post-container" class="container" style="background-color: #C0E9AF;margin-top: 25px; padding: 25px; border-radius: 20px;">
+            <%if (comments.length > 0) { %>
+            <% comments.forEach(comment =>{ %>
+                <% if(comment.author){ %>
+                    <div  class="post-section" style="background-color: #f1faee ; padding: 10px; border-radius: 15px; margin-top: 20px;">
+                        <div style="border-radius: 12px 12px 0px 0px; padding: 6px 0px 2px 20px; background-color: lightskyblue;">
+                            <p style="margin-top: 5px; margin-bottom: 10px;"><%= comment.author.username%></p> <p style="font-size: small; margin-bottom: 14px;"> <%= comment.createdAt%></p>
+                        </div>
+                        <div class="content-section-comment">
+                            <br>
+                            <p style="margin-bottom: 15px; padding-left: 25px;"><%= comment.body %></p>
+                        </div>
+                    </div>
+                        <% }});} %>
+                    
+        </div>
+    </div>
+    <script>
+        const utterance = new SpeechSynthesisUtterance()
+    utterance.addEventListener('end', () => {
+      textInput.disabled = false
+    })
+    utterance.addEventListener('boundary', e => {
+      currentCharacter = e.charIndex
+    })
+    
+    function playText(text) {
+      console.log(text)
+      if (speechSynthesis.paused && speechSynthesis.speaking) {
+        return speechSynthesis.resume()
+      }
+      if (speechSynthesis.speaking) return
+      utterance.text = text
+      utterance.rate = 1
+      speechSynthesis.speak(utterance)
+    }
+    
+    function pauseText() {
+      if (speechSynthesis.speaking) speechSynthesis.pause()
+    }
+    
+    function stopText() {
+      speechSynthesis.resume()
+      speechSynthesis.cancel()
+    }
+    
+      </script>
+</body>
+</html>

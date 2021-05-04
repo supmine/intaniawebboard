@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="../public/style1.css">
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Kanit&amp;subset=thai,latin" rel="stylesheet" type="text/css">
+
+  <title>Home</title>
+
+  <%- include('layout')%>
+
+    <style>
+      * {
+        box-sizing: border-box;
+        font-family: 'Kanit', 'Google Sans';
+      }
+    </style>
+
+</head>
+
+<body style="background-color: #1b3457; padding: 40px;">
+
+  <div class="form-container vsc-initialized">
+
+    <div class="container"  style="color: white; background-color: #457b9d; border-radius: 20px; padding: 60px; text-align: center;"> 
+      <h1><b>Intania Webboard :))</b></h1>
+    </div>
+
+    <br>
+    <div class="container" style="color:rgb(42, 42, 42); background-color: #8ACED0; border-radius: 20px; padding: 35px;">
+
+          <h2 style="padding-left: 10px; padding-bottom: 10px;">Welcome, <%= currentUser %></h2>
+          
+          <form class="form-signin" method="POST" action="/topics" enctype="multipart/form-data">
+           
+            <div class="custom-file mb-3" style="padding-left: 10px;">
+              <label for="img">Image Here:</label>
+              <input type="file" name="image" id="img" accept="image/*"> 
+            </div>
+
+            <div class="form-group">
+              <label class="sr-only" for="body">Write Here:</label>
+              <input class="form-control" type="text" name="body" id="body" required="required" placeholder="Write something here"/>
+            </div>
+  
+              <button class="btn btn-primary btn-block btn-link" type="submit" style="color:white; background-color: #457b9d; border-color: transparent;">Post</button>
+
+            
+            
+          </form>
+        
+          <a class="btn btn-link" href="/logout" style="color: rgb(42, 42, 42); margin-top:5px;" >Log Out</a>
+    </div>
+      
+    
+      <div id =" post-container" class="container" style="background-color: #C0E9AF;margin-top: 25px; padding: 25px; border-radius: 20px;">
+      <% if (topics.length> 0) { %>
+        <% topics.forEach(tp=> { %>
+          <% if(tp.topic.author){ %>
+            <div class="post-section" style="background-color: #f1faee ; padding: 20px; border-radius: 20px; margin-top: 20px;">  
+                    <p style="">
+              <%= tp.topic.author.username %>
+                <br>
+                <p style="font-size: small;">
+                  <%= tp.topicCreatedAt %>
+                </p>
+                <div id="<%= tp.topic._id%>" class="content-section" style="font-size: 28px;">
+                      <%= tp.topic.body%>
+                    </div>
+                    </p>
+                    <%if (tp.topic.imageUrl){ %>
+                      <div>
+                        <img src=" <%=tp.topic.imageUrl%>" alt="Image Not Found" style="max-width: 100%; height: auto;">
+                </div>
+                <% } %>
+
+
+                  <a class="view-comments-button" href="/topics/<%= tp.topic._id %>">View <%= tp.commentCount%>
+                      comment(s)</a>
+                  <button type="button" onclick="playText('<%= tp.topic.body %>')" class="speak-button">Speak!</button>
+            </div>
+            <% } %>
+              <% }) %>
+                <% } else { %>
+                  <p>There are no posts to display...</p>
+                  <% } %>
+
+
+    
+      </div>
+  </div>
+
+
+  <script>
+    const utterance = new SpeechSynthesisUtterance()
+utterance.addEventListener('end', () => {
+  textInput.disabled = false
+})
+utterance.addEventListener('boundary', e => {
+  currentCharacter = e.charIndex
+})
+
+function playText(text) {
+  console.log(text)
+  if (speechSynthesis.paused && speechSynthesis.speaking) {
+    return speechSynthesis.resume()
+  }
+  if (speechSynthesis.speaking) return
+  utterance.text = text
+  utterance.rate = 1
+  speechSynthesis.speak(utterance)
+}
+
+function pauseText() {
+  if (speechSynthesis.speaking) speechSynthesis.pause()
+}
+
+function stopText() {
+  speechSynthesis.resume()
+  speechSynthesis.cancel()
+}
+
+  </script>
+</body>
+
+
+</html>
