@@ -34,7 +34,6 @@ router.post('/register', [
         }
     },
     async(req, res) => {
-        console.log(req.body);
         //ยังไม่ได้ validate ว่า ช่องที่กรอกแต่ละช่องเป็น email จริงไหม หรือ pass ต้องเกินกี่ตัว
         const { username, password, confirmpassword } = req.body;
         //console.log(username);
