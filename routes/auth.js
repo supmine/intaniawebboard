@@ -2,7 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const router = express.Router();
 const passport = require('passport');
-const User = require('../models/User');
+const User = require('../models/user');
 const { check, validationResult } = require('express-validator');
 const flash = require('connect-flash');
 router.post('/register', [
