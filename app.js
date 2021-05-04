@@ -70,14 +70,14 @@ passport.deserializeUser((id, cb) => {
 
 
 
-
+initServer();
 //connect db + start server
 //const PORT = process.env.PORT || 4000;
-initServer().then(result => {
-    app.listen(process.env.PORT || 4000, (req, res) => {
-        console.log(`Server Started at PORT ${process.env.PORT || 4000}`);
-    });
-});
+// initServer().then(result => {
+//     app.listen(process.env.PORT || 4000, (req, res) => {
+//         console.log(`Server Started at PORT ${process.env.PORT || 4000}`);
+//     });
+// });
 
 
 
@@ -179,4 +179,8 @@ app.use((err, req, res, next) => {
             message: err.message,
         }
     });
+});
+const PORT = process.env.PORT || 4000
+app.listen(PORT, (req, res) => {
+    console.log(`Server Started at PORT ${PORT}`);
 });
