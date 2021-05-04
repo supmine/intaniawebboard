@@ -57,17 +57,11 @@ router.get('/', isAuthenticated, async(req, res) => {
             commentCount = comments.length;
             comment = comments[0];
         }
-        var tms = 0;
-        if (moment().utcOffset() == -0) {
-            // for server
-            tms += 28800000
-        }
-        tms += tp.createdAt;
         return {
             topic: tp,
             comment: comment,
             commentCount: commentCount,
-            topicCreatedAt: moment(tms).format("MMMM DD YYYY, H:mm"),
+            topicCreatedAt: moment(tp.createdAt).format("MMMM DD YYYY, H:mm"),
             request: {
                 type: 'GET',
                 url: req.protocol + '://' + req.get('host') + req.originalUrl + tp._id
