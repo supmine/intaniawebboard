@@ -1,7 +1,7 @@
 //import lib
 const express = require('express');
 const initServer = require('./configs/database');
-const User = require('./models/User');
+const User = require('./models/user');
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
 var path = require('path');
