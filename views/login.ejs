@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans&amp;display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Kanit&amp;subset=thai,latin" rel="stylesheet" type="text/css">
+
     <title>Login</title>
 
     <%- include('layout')%>
@@ -22,7 +23,7 @@
 
 </head>
 
-<body style="background-color: #1b3457; padding: 40px;">
+<body style="background-color: #1b3457; padding: 30px;">
 
     <div class="form-container vsc-initialized">
 
@@ -30,12 +31,7 @@
             <h1><b>Intania Webboard :))</b></h1>
         </div>
 
-        <br>
-        <div class="container" style="text-align:center; color: white; background-color: #6DC2C5; border-radius: 20px; padding: 25px;">
-            <h4>
-                Welcome to the Intania Webboard!<br> Log in to see latest content our Intania peeps have come up with!
-            </h4>
-        </div>
+
 
         <br>
 
@@ -55,16 +51,24 @@
                 <div class="form-group">
                     <label class="sr-only" for="password">Password</label>
                     <input class="form-control" type="password" name="password" id="password" placeholder="Password" required="required" />
+
                 </div>
 
 
                 <button class="btn btn-primary btn-block" type="submit" style="background-color: #e63946; border-color: transparent;">Log In</button>
 
                 <a class="btn btn-link" href="/register" style="color:#e63946;">Don't have an account?</a>
-                <p>
+                <p style="text-align: center; font-size: 22px; color: red;">
                     <%= message%>
                 </p>
             </form>
+        </div>
+
+        <br>
+        <div class="container" style="text-align:center; color: white; background-color: #6DC2C5; border-radius: 20px; padding: 25px;">
+            <h4>
+                Welcome to the Intania Webboard!<br> Log in to see latest content our Intania peeps have come up with!
+            </h4>
         </div>
 
     </div>

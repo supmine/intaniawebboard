@@ -19,11 +19,26 @@
                 box-sizing: border-box;
                 font-family: 'Kanit', 'Google Sans';
             }
+            
+            .speak:hover {
+                background-color: #b9e4a8;
+                cursor: pointer;
+            }
+            
+            .speak {
+                background-color: #90cc76;
+            }
+            
+            @media screen and (max-width: 460px) {
+                #img {
+                    width: inherit;
+                }
+            }
         </style>
 
 </head>
 
-<body style="background-color: #1b3457; padding: 40px;">
+<body style="background-color: #1b3457; padding: 30px;">
 
     <div class="form-container vsc-initialized">
 
@@ -32,60 +47,72 @@
         </div>
 
         <br>
-        <div class="container" style="color:rgb(42, 42, 42); background-color: #8ACED0; border-radius: 20px; padding: 35px;">
+        <div class="container" style="color:rgb(42, 42, 42); background-color: #8ACED0; border-radius: 20px; padding: 25px 25px 20px 25px;">
 
-            <h2 style="padding-left: 10px; padding-bottom: 10px;">Welcome,
+            <h2 style="padding-left: 10px; padding-bottom: 18px;">Welcome,
                 <%= currentUser %>
             </h2>
 
-            <form class="form-signin" method="POST" action="/topics" enctype="multipart/form-data">
+            <div style="padding: 20px; background-color: #bfecec; border-radius: 20px;">
+                <form class="form-signin" method="POST" action="/topics" enctype="multipart/form-data">
 
-                <div class="custom-file mb-3" style="padding-left: 10px;">
-                    <label for="img">Image Here:</label>
-                    <input type="file" name="image" id="img" accept="image/*">
-                </div>
+                    <div class="custom-file mb-3" style="padding-left: 10px;">
+                        <label for="img">Image Here:</label>
+                        <input type="file" name="image" id="img" accept="image/*">
+                    </div>
 
-                <div class="form-group">
-                    <label class="sr-only" for="body">Write Here:</label>
-                    <input class="form-control" type="text" name="body" id="body" required="required" placeholder="Write something here" />
-                </div>
+                    <div class="form-group">
+                        <label class="sr-only" for="body">Write Here:</label>
+                        <input class="form-control" type="text" name="body" id="body" required="required" placeholder="Write something here" />
+                    </div>
 
-                <button class="btn btn-primary btn-block btn-link" type="submit" style="color:white; background-color: #457b9d; border-color: transparent;">Post</button>
+                    <button class="btn btn-primary btn-block btn-link" type="submit" style="color:white; background-color: #457b9d; border-color: transparent;">Post</button>
 
 
+                </form>
+            </div>
 
-            </form>
-
-            <a class="btn btn-link" href="/logout" style="color: rgb(42, 42, 42); margin-top:5px;">Log Out</a>
+            <a class="btn btn-link" href="/logout" style="color: rgb(42, 42, 42); margin-top:10px; padding-left: 15px; padding-top: 5px;">Log Out</a>
         </div>
 
 
-        <div id=" post-container" class="container" style="background-color: #C0E9AF;margin-top: 25px; padding: 25px; border-radius: 20px;">
+        <div id=" post-container" class="container" style="background-color: #c8ebb9;margin-top: 25px; padding: 25px; padding-bottom: 5px; border-radius: 20px;">
             <% if (topics.length> 0) { %>
                 <% topics.forEach(tp=> { %>
                     <% if(tp.topic.author){ %>
-                        <div class="post-section" style="background-color: #f1faee ; padding: 20px; border-radius: 20px; margin-top: 20px;">
-                            <p style="">
-                                <%= tp.topic.author.username %>
-                                    <br>
-                                    <p style="font-size: small;">
-                                        <%= tp.topicCreatedAt %>
-                                    </p>
-                                    <div id="<%= tp.topic._id%>" class="content-section" style="font-size: 28px;">
-                                        <%= tp.topic.body%>
-                                    </div>
-                            </p>
+                        <div class="post-section" style="background-color: #f1faee ; padding: 10px; border-radius: 15px; margin-bottom: 20px;">
+                            <div style="border-radius: 12px 12px 0px 0px; padding: 6px 0px 2px 20px; background-color: #90cc76; color: rgb(35, 35, 35);">
+                                <p style="margin-top: 5px; margin-bottom: 10px;">
+                                    <%= tp.topic.author.username%>
+                                </p>
+                                <p style="font-size: small; margin-bottom: 14px;">
+                                    <%= tp.topicCreatedAt %>
+                                </p>
+                            </div>
+
+                            <div id="<%= tp.topic._id%>" class="content-section" style="padding: 14px 12px 4px 18px; font-size: 26px;">
+                                <%= tp.topic.body%>
+                            </div>
+
                             <%if (tp.topic.imageUrl){ %>
                                 <div>
-                                    <img src=" <%=tp.topic.imageUrl%>" alt="Image Not Found" style="max-width: 100%; height: auto;">
+                                    <img src=" <%=tp.topic.imageUrl%>" alt="Image Not Found" style="max-width: 100%; height: auto; margin-bottom: 18px; margin-top: 12px;">
                                 </div>
                                 <% } %>
 
-
-                                    <a class="view-comments-button" href="/topics/<%= tp.topic._id %>">View <%= tp.commentCount%>
+                                    <div style="padding: 4px 20px 12px 18px;">
+                                        <%if(tp.commentCount==0){%>
+                                            <a class="view-comments-button" href="/topics/<%= tp.topic._id %>">Be the first one to comment!</a>
+                                            <%}else{%>
+                                                <a class="view-comments-button" href="/topics/<%= tp.topic._id %>">View <%= tp.commentCount%>
                       comment(s)</a>
-                                    <button type="button" onclick="playText('<%= tp.topic.body %>')" class="speak-button">Speak!</button>
+                                                <%}%>
+
+                                                    <button type="button" onclick="playText('<%= tp.topic.body %>')" class="speak" style="margin-left:6px; border-color: transparent; border-radius: 5px;">Speak!</button>
+                                    </div>
                         </div>
+
+
                         <% } %>
                             <% }) %>
                                 <% } else { %>

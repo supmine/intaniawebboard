@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="../public/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans&amp;display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Kanit&amp;subset=thai,latin" rel="stylesheet" type="text/css">
 
@@ -21,19 +21,12 @@
         </style>
 </head>
 
-<body style="background-color: #1b3457; padding: 40px;">
+<body style="background-color: #1b3457; padding: 30px;">
 
     <div class="form-container vsc-initialized">
 
         <div class="container" style="color: white; background-color: #457b9d; border-radius: 20px; padding: 60px; text-align: center;">
             <h1><b>Intania Webboard :))</b></h1>
-        </div>
-
-        <br>
-        <div class="container" style="text-align:center; color: white; background-color: #6DC2C5; border-radius: 20px; padding: 25px;">
-            <h4>
-                Welcome to the Intania Webboard!<br> Log in to see latest content our Intania peeps have come up with!
-            </h4>
         </div>
 
         <br>
@@ -50,25 +43,62 @@
 
                 <div class="form-group">
                     <label class="sr-only" for="password">Password</label>
-                    <input class="form-control" type="password" name="password" id="password" placeholder="Password" required="required" />
+                    <input class="form-control" type="password" name="password" id="password" placeholder="Password" required="required" onkeyup='check();' />
                 </div>
 
                 <div class="form-group">
                     <label class="sr-only" for="confirmpassword">Confirm Password</label>
-                    <input class="form-control" type="password" name="confirmpassword" id="confirmpassword" placeholder="Confirm Password" required="required" />
+                    <input class="form-control" type="password" name="confirmpassword" id="confirmpassword" placeholder="Confirm Password" required="required" onkeyup='check();' />
                 </div>
 
 
-                <button class="btn btn-primary btn-block" type="submit" style="background-color: #e63946; border-color: transparent;">Register & Log In</button>
+                <button class="btn btn-primary btn-block" id="reg-button" type="submit" style="background-color: #e63946; border-color: transparent;">Register & Log In</button>
 
                 <a class="btn btn-link" href="/login" style="color:#e63946;">Have an account?</a>
-                <p>
+
+                <div style="text-align: center; font-size: 20px; color: red;" id="warning">
+
+                </div>
+
+                <p style="text-align: center; font-size: 20px; color: red;">
                     <%= message%>
                 </p>
             </form>
         </div>
 
+        <br>
+        <div class="container" style="text-align:center; color: white; background-color: #6DC2C5; border-radius: 20px; padding: 25px;">
+            <h4>
+                Welcome to the Intania Webboard!<br> Log in to see latest content our Intania peeps have come up with!
+            </h4>
+        </div>
+
     </div>
+    <script>
+        var check = function() {
+
+            var len = (document.getElementById('password').value).length;
+            if ((len < 6) || (len > 20)) {
+                document.getElementById('warning').style.color = 'red';
+                document.getElementById('warning').innerHTML = 'Password must be between 6 and 20 characters.';
+                document.getElementById("reg-button").disabled = true;
+            } else {
+                document.getElementById('warning').innerHTML = '';
+                if (document.getElementById('password').value ==
+                    document.getElementById('confirmpassword').value) {
+                    document.getElementById('warning').style.color = 'green';
+                    document.getElementById('warning').innerHTML = 'matching';
+                    document.getElementById("reg-button").disabled = false;
+                } else {
+                    document.getElementById('warning').style.color = 'red';
+                    document.getElementById('warning').innerHTML = 'not matching';
+                    document.getElementById("reg-button").disabled = true;
+                }
+            }
+
+
+        }
+    </script>
 </body>
 
 </html>
