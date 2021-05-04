@@ -45,7 +45,7 @@ router.post('/register', [
                 var error = new Error('User already exist')
                 console.log(error);
                 req.flash('error', 'User already exist')
-                res.redirect('/register');
+                return res.redirect('/register');
             }
             const passwordHash = bcrypt.hashSync(password, 10);
             user = new User({
