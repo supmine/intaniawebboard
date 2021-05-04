@@ -46,7 +46,7 @@ passport.use(
                 return done(null, user);
             }
             console.log('incorrect password');
-            return done(null, false, { message: 'Incorrect password.' });
+            return done(null, false, { message: 'Incorrect password' });
         });
     })
 );
@@ -70,12 +70,12 @@ passport.deserializeUser((id, cb) => {
 
 
 
-//initServer();
+
 //connect db + start server
 const PORT = process.env.PORT || 4000;
 initServer().then(result => {
-    app.listen(process.env.PORT || 4000, (req, res) => {
-        console.log(`Server Started at PORT ${process.env.PORT || 4000}`);
+    app.listen(PORT, (req, res) => {
+        console.log(`Server Started at PORT ${PORT}`);
     });
 });
 
@@ -87,7 +87,7 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-
+app.use('/uploads', express.static('uploads'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -180,7 +180,3 @@ app.use((err, req, res, next) => {
         }
     });
 });
-// const PORT = process.env.PORT || 4000
-// app.listen(PORT, (req, res) => {
-//     console.log(`Server Started at PORT ${PORT}`);
-// });

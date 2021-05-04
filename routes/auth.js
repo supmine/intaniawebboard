@@ -54,7 +54,6 @@ router.post('/register', [
             });
 
             await user.save();
-            //console.log(user);
             console.log('save to db');
             passport.authenticate('local')(req, res, function() {
                 console.log('register and login');
