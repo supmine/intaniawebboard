@@ -5,12 +5,12 @@ const Comment = require('../models/comment');
 const router = express.Router();
 
 const isAuthenticated = (req, res, next) => {
-    if(req.user){
+    if (req.user) {
         console.log('authenticated');
         return next();
-    } else{
+    } else {
         console.log('not authenticated')
-        //res.redirect('/login');
+            //res.redirect('/login');
         res.status(401).json({
             message: "user not authenticated"
         })
@@ -19,14 +19,14 @@ const isAuthenticated = (req, res, next) => {
 
 //edit comment **expects newBody in req.body**
 // tested only with dummy userIds
-router.patch('/:commentId', isAuthenticated, (req,res,next) => {
+router.patch('/:commentId', isAuthenticated, (req, res, next) => {
     const id = req.params.commentId;
     const userId = req.user._id;
-    Comment.updateOne({_id: id, author: userId}, { $set: { body: req.body.newBody } })
+    Comment.updateOne({ _id: id, author: userId }, { $set: { body: req.body.newBody } })
         .exec()
         .then(result => {
             console.log(result);
-            if(result.nModified === 1) {
+            if (result.nModified === 1) {
                 res.status(200).json({
                     message: 'Comment edited',
                     // request: {
@@ -34,14 +34,13 @@ router.patch('/:commentId', isAuthenticated, (req,res,next) => {
                     //     url: 'http://localhost:4000/topics/' + id
                     // }
                 });
-            }
-            else {
+            } else {
                 res.status(405).json({
                     message: "Only the comment owner can edit this comment"
                 });
             }
         })
-        .catch(err =>{
+        .catch(err => {
             console.log(err);
             res.status(500).json({
                 message: "Error editing comment",
@@ -52,13 +51,13 @@ router.patch('/:commentId', isAuthenticated, (req,res,next) => {
 
 // delete a comment
 // tested only with dummy userIds
-router.delete('/:commentId', isAuthenticated, (req,res,next) => {
+router.delete('/:commentId', isAuthenticated, (req, res, next) => {
     const id = req.params.commentId;
     const userId = req.user._id;
-    Comment.remove({_id: id, author: userId}, {single: true})
+    Comment.remove({ _id: id, author: userId }, { single: true })
         .exec()
         .then(result => {
-            if(result.deletedCount === 1){
+            if (result.deletedCount === 1) {
                 res.status(200).json({
                     message: "Comment deleted"
                 });

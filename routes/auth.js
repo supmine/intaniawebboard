@@ -7,7 +7,7 @@ const { check, validationResult } = require('express-validator');
 const flash = require('connect-flash');
 router.post('/register', [
         check('username', 'Please fill your username').notEmpty(),
-        check('password', 'Password more than 6').isLength({ min: 6 }),
+        check('password', 'Password must be longer than 6 characters.').isLength({ min: 6 }),
         check('confirmpassword').custom((value, { req }) => {
             if (value != req.body.password) {
                 throw new Error('Password confirmation does not match password')
@@ -34,6 +34,7 @@ router.post('/register', [
         }
     },
     async(req, res) => {
+        console.log(req.body);
         //ยังไม่ได้ validate ว่า ช่องที่กรอกแต่ละช่องเป็น email จริงไหม หรือ pass ต้องเกินกี่ตัว
         const { username, password, confirmpassword } = req.body;
         //console.log(username);
@@ -42,9 +43,9 @@ router.post('/register', [
         try {
             let haveUsername = await User.findOne({ username });
             if (haveUsername) {
-                var error = new Error('User already exist')
+                var error = new Error('This username is already taken.')
                 console.log(error);
-                req.flash('error', 'User already exist')
+                req.flash('error', 'This username is already taken.')
                 return res.redirect('/register');
             }
             const passwordHash = bcrypt.hashSync(password, 10);
@@ -54,6 +55,7 @@ router.post('/register', [
             });
 
             await user.save();
+            //console.log(user);
             console.log('save to db');
             passport.authenticate('local')(req, res, function() {
                 console.log('register and login');

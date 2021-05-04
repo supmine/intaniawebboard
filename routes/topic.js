@@ -68,7 +68,6 @@ router.get('/', isAuthenticated, async(req, res) => {
             }
         };
     }));
-
     /*   res.status(200).json({
            topicCount: topics.length,
            topics: topicAndComment */
